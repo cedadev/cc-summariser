@@ -6,7 +6,7 @@ results from running checks on multiple datasets.
 ## Installation ##
 
 ```
-git clone <URL of this repo>
+git clone https://github.com/joesingo/cc-summarizer
 pip install ./cc-summarizer
 
 # Multiple dataset output is not yet on mastetr branch...
