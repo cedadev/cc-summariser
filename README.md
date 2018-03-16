@@ -9,7 +9,7 @@ results from running checks on multiple datasets.
 git clone https://github.com/joesingo/cc-summarizer
 pip install ./cc-summarizer
 
-# Multiple dataset output is not yet on mastetr branch...
+# Multiple dataset output is not yet on master branch...
 pip install git+https://github.com/ioos/compliance-checker@refactor-scoring
 ```
 
