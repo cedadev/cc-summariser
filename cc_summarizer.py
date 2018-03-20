@@ -101,7 +101,7 @@ def get_summary_text(summary_dict, args):
                  .format(**summary_dict))
     lines.append("")
 
-    summary = summary_dict["summary"]
+    summary = remove_empty_values(summary_dict["summary"])
     # Create sections in a loop to avoid repeating generic code for printing
     # level, check name etc
     sections = [
@@ -190,7 +190,7 @@ def get_summary_dict(dict_output):
     return {
         "num_files": len(dict_output),
         "num_no_errors": len(dict_output) - len(files_with_errors),
-        "summary": remove_empty_values(summary)
+        "summary": summary
     }
 
 
