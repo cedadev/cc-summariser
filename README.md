@@ -16,5 +16,5 @@ pip install git+https://github.com/ioos/compliance-checker@refactor-scoring
 ## Usage ##
 ```
 compliance-checker -f json_new -o results.json --test <your test(s)> <dataset>...
-cc-summarizer results.json summarized.json
+cc-summarizer results.json
 ```
