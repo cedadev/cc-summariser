@@ -5,6 +5,7 @@ import io
 import json
 from collections import OrderedDict
 import argparse
+import bisect
 
 __version__ = "0.0.1"
 DESCRIPTION = ("Summarize the results compliance-checker run on multiple "
@@ -81,7 +82,7 @@ def detailed_text(res_dict, limit):
     """
     files_str = pluralise("file", res_dict["count"])
     lines = ["- {name}: ({count} {})".format(files_str, **res_dict)]
-    for name in truncate_list(sorted(res_dict["files"]), limit):
+    for name in truncate_list(res_dict["files"], limit):
         lines.append(indent(name, level=1))
     lines.append("")
 
@@ -182,7 +183,8 @@ def get_summary_dict(dict_output):
                         summary[p_level][check_name].append(summarized_info)
 
                     summarized_info["count"] += 1
-                    summarized_info["files"].append(filename)
+                    # Insert and preserve sort order
+                    bisect.insort(summarized_info["files"], filename)
                     for msg in res["msgs"]:
                         if msg not in summarized_info["msgs"]:
                             summarized_info["msgs"].append(msg)
