@@ -1,9 +1,10 @@
 import pytest
 
-from cc_summarizer import get_summary_dict
+from cc_summarizer import (get_summary_dict, indent, pluralise, underline,
+                           truncate_list, remove_empty_values)
 
 
-class TestSummariser(object):
+class TestSummarizer(object):
     def test_single_file(self):
         summarized = get_summary_dict({
             "file.nc": {
@@ -52,7 +53,60 @@ class TestSummariser(object):
 
         assert len(summarized["summary"]["high_priorities"]["check_name"]) == 1
         high_p = summarized["summary"]["high_priorities"]["check_name"][0]
-        assert high_p["name"] == "high p error"
-        assert high_p["msgs"] == ["h"]
-        assert set(high_p["files"]) == set(["file1.nc", "file2.nc"])
-        assert high_p["count"] == 2
+        assert high_p == {
+            "name": "high p error",
+            "msgs": ["h"],
+            "files": ["file1.nc", "file2.nc"],
+            "count": 2
+        }
+
+    def test_no_errors(self):
+        summarized = get_summary_dict({
+            "with_errors.nc": {
+                "mycheck": {
+                    "high_priorities": [
+                        {"name": "error", "msgs": ["e"], "value": [4, 5]},
+                        {"name": "not error", "msgs": ["e"], "value": [5, 5]}
+                    ],
+                    "medium_priorities": [],
+                    "low_priorities": []
+                }
+            },
+            "no_errors.nc": {
+                "mycheck": {
+                    "high_priorities": [
+                        {"name": "not error", "msgs": ["e"], "value": [5, 5]}
+                    ],
+                    "medium_priorities": [],
+                    "low_priorities": []
+                }
+            }
+        })
+
+        # no_errors.nc should have no errors
+        assert summarized["num_no_errors"] == 1
+        # Checks with full score should not be included
+        assert len(summarized["summary"]["high_priorities"]["mycheck"]) == 1
+
+class TestMiscFunctions(object):
+    def test_indent(self):
+        assert indent("hello\nthere", level=2) == "    hello\n    there"
+
+    def test_underline(self):
+        assert underline("some text", "@") == "some text\n@@@@@@@@@"
+
+    def test_remove_empty_values(self):
+        assert remove_empty_values({"key": "value"}) == {"key": "value"}
+        assert remove_empty_values({"key": []}) == {}
+        d = {"key": {"high": [], "medium": ["yes"], "low": None}}
+        assert remove_empty_values(d) == {"key": {"medium": ["yes"]}}
+
+    def test_pluralise(self):
+        assert pluralise("house", 2) == "houses"
+        assert pluralise("house", 1) == "house"
+
+    def test_trunacte_list(self):
+        assert truncate_list([1, 2, 3], 5) == [1, 2, 3]
+        assert truncate_list([1, 2, 3], 1) == ["...", 3]
+        assert truncate_list([1, 2, 3, 4, 5, 6], 3) == [1, "...", 5, 6]
+        assert truncate_list([1, 2, 3, 4, 5, 6], 4) == [1, 2, "...", 5, 6]
