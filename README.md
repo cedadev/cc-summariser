@@ -18,20 +18,3 @@ pip install git+https://github.com/ioos/compliance-checker@refactor-scoring
 compliance-checker -f json_new -o results.json --test <your test(s)> <dataset>...
 cc-summarizer results.json summarized.json
 ```
-
-Output is of the form
-```
-{
-    <check name>: {
-        "high_priorities": [{
-            "name": <name>,
-            "msgs": [<message>, ...],
-            "count": <number of files with this error>,
-            "files": [<file 1>, <file 2>, ...]
-        }, ...],
-        "medium_priorities": [...],
-        "low_priorities": [...]
-    },
-    <check two>: {...}
-}
-```
