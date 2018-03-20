@@ -1,15 +1,14 @@
-"""
-things to check with this approach:
-- what is 'children' in each result dict?
-"""
 from __future__ import unicode_literals, print_function
 import codecs
 import sys
 import io
 import json
 from collections import OrderedDict
+import argparse
 
 __version__ = "0.0.1"
+DESCRIPTION = ("Summarize the results compliance-checker run on multiple "
+               "datasets")
 
 # Ensure output is encoded as Unicode when output is redirected or piped
 if sys.stdout.encoding is None:
@@ -89,10 +88,12 @@ def detailed_text(res_dict, limit):
     return "\n".join(lines)
 
 
-def get_summary_text(summary_dict):
+def get_summary_text(summary_dict, args):
     """
     Return a human readable text version of summary information from the dict
-    format produced by get_summary_dict
+    format produced by get_summary_dict.
+
+    `args` should be an argparse arguments object.
     """
     lines = []
     lines.append("File scanned: {num_files}".format(**summary_dict))
@@ -105,7 +106,7 @@ def get_summary_text(summary_dict):
     # level, check name etc
     sections = [
         ("Failures summary", brief_text, []),
-        ("Failure details", detailed_text, [4])
+        ("Failure details", detailed_text, [args.file_limit])
     ]
     for section_name, callback, args in sections:
         lines.append(underline(section_name, "="))
@@ -193,19 +194,22 @@ def get_summary_dict(dict_output):
     }
 
 
-def usage():
-    print("Usage: cc-summarizer RESULTS", file=sys.stderr)
-
-
 def main():
-    if len(sys.argv) != 2:
-        usage()
-        return 1
+    parser = argparse.ArgumentParser(description=DESCRIPTION)
+    parser.add_argument("results_file",
+                        help="File containing compliance-checker results in "
+                             "'json_new' format")
 
-    with io.open(sys.argv[1], encoding="utf-8") as f:
+    parser.add_argument("-l", "--file-limit", type=int, default=4,
+                        help="The maximum number of offending files to list "
+                             "in the detailed failures section")
+
+    args = parser.parse_args()
+
+    with io.open(args.results_file, encoding="utf-8") as f:
         input_results = json.load(f)
 
-    summary = get_summary_text(get_summary_dict(input_results))
+    summary = get_summary_text(get_summary_dict(input_results), args)
     print(summary)
     return 0
 
