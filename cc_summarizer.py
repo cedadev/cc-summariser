@@ -204,15 +204,24 @@ def main():
 
     parser.add_argument("-l", "--file-limit", type=int, default=4,
                         help="The maximum number of offending files to list "
-                             "in the detailed failures section")
+                             "in the 'Failure details' section in the text "
+                             "format output")
+
+    parser.add_argument("-f", "--format", choices=["text", "json"],
+                        default="text", help="Format to print summary in")
 
     args = parser.parse_args()
 
     with io.open(args.results_file, encoding="utf-8") as f:
         input_results = json.load(f)
 
-    summary = get_summary_text(get_summary_dict(input_results), args)
-    print(summary)
+    summary_dict = get_summary_dict(input_results)
+    if args.format == "text":
+        summary = get_summary_text(summary_dict, args)
+        print(summary)
+    elif args.format == "json":
+        json.dump(summary_dict, sys.stdout, indent=2, ensure_ascii=False)
+
     return 0
 
 
