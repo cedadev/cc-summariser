@@ -82,7 +82,11 @@ def detailed_text(res_dict, limit):
     """
     files_str = pluralise("file", res_dict["count"])
     lines = ["- {name}: ({count} {})".format(files_str, **res_dict)]
-    for name in truncate_list(res_dict["files"], limit):
+
+    filenames = (truncate_list(res_dict["files"], limit) if limit
+                 else res_dict["files"])
+
+    for name in filenames:
         lines.append(indent(name, level=1))
     lines.append("")
 
@@ -202,7 +206,7 @@ def main():
                         help="File containing compliance-checker results in "
                              "'json_new' format")
 
-    parser.add_argument("-l", "--file-limit", type=int, default=4,
+    parser.add_argument("-l", "--file-limit", type=int, default=None,
                         help="The maximum number of offending files to list "
                              "in the 'Failure details' section in the text "
                              "format output")
