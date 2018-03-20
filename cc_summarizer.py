@@ -62,14 +62,28 @@ def brief_text(res_dict):
     return "- {name}: {count} {}".format(files_str, **res_dict)
 
 
-def detailed_text(res_dict):
+def truncate_list(l, limit):
+    """
+    Replace the middle of the list `l` with '...' if `l` contains more than
+    `limit` elements
+    """
+    length = len(l)
+    if length <= limit:
+        return l
+
+    n1 = int(limit / 2.0)
+    n2 = limit - n1
+    return l[:n1] + ["..."] + l[length - n2:]
+
+
+def detailed_text(res_dict, limit):
     """
     Return a string to be included in the detailed section of the text
     """
     files_str = pluralise("file", res_dict["count"])
     lines = ["- {name}: ({count} {})".format(files_str, **res_dict)]
-    for filename in sorted(res_dict["files"]):
-        lines.append(indent(filename, level=1))
+    for name in truncate_list(sorted(res_dict["files"]), limit):
+        lines.append(indent(name, level=1))
     lines.append("")
 
     return "\n".join(lines)
@@ -87,11 +101,13 @@ def get_summary_text(summary_dict):
     lines.append("")
 
     summary = summary_dict["summary"]
+    # Create sections in a loop to avoid repeating generic code for printing
+    # level, check name etc
     sections = [
-        ("Failures summary", brief_text),
-        ("Failure details", detailed_text)
+        ("Failures summary", brief_text, []),
+        ("Failure details", detailed_text, [4])
     ]
-    for section_name, callback in sections:
+    for section_name, callback, args in sections:
         lines.append(underline(section_name, "="))
         lines.append("")
         for p_level in summary:
@@ -103,7 +119,7 @@ def get_summary_text(summary_dict):
                 lines.append(indent("- {}:".format(check_name), level=1))
 
                 for res in summary[p_level][check_name]:
-                    lines.append(indent(callback(res), level=2))
+                    lines.append(indent(callback(res, *args), level=2))
                 lines.append("")
 
     return "\n".join(lines).strip()
