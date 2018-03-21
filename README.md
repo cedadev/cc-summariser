@@ -23,7 +23,7 @@ cc-summarizer results.json
 
 For more options see the output of `cc-summarizer --help`:
 ```
-usage: cc_summarizer.py [-h] [-l FILE_LIMIT] [-f {text,json}] results_file
+usage: cc-summarizer [-h] [-l FILE_LIMIT] [-f {text,json}] results_file
 
 Summarize the results compliance-checker run on multiple datasets
 
