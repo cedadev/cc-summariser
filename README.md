@@ -58,7 +58,14 @@ JSON output is of the following form:
                     "name": <check name>,
                     "count": <number of files that failed this check>,
                     "files": [<file 1>, <file 2>, ...],
-                    "msgs": [<msg 1>, <msg 2>, ...]
+                    "msgs": [
+                        {
+                            "msg": <msg 1>,
+                            "count": <n>,
+                            "files": <files with this failure message>
+                        },
+                        ...
+                    ]
                 },
                 ...
             ],
@@ -79,7 +86,9 @@ human-readable layout. It is split into two sections
   each check. This section is easy to scan through to see where checks are
   failing the most.
 
-- The 'Failure details' section lists the filenames that failed each check.
+- The 'Failure details' section lists the filenames that failed each check and
+  reasons for the check failing (if available).
+
   The `--file-limit` command line option limits the number of filenames listed
   here; e.g. if 10 files failed a check and `--file-limit=4` the output would
   be
