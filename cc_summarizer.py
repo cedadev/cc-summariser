@@ -81,13 +81,23 @@ def detailed_text(res_dict, limit):
     Return a string to be included in the detailed section of the text
     """
     files_str = pluralise("file", res_dict["count"])
-    lines = ["- {name}: ({count} {})".format(files_str, **res_dict)]
+    lines = [
+        "- {name}: ({count} {files_str})".format(files_str=files_str, **res_dict),
+        indent("Filenames:", level=1)
+    ]
 
     filenames = (truncate_list(res_dict["files"], limit) if limit
                  else res_dict["files"])
 
     for name in filenames:
-        lines.append(indent(name, level=1))
+        lines.append(indent(name, level=2))
+
+    if res_dict["msgs"]:
+        lines.append(indent("Messages:", level=1))
+        for msg in res_dict["msgs"]:
+            files_str = pluralise("file", msg["count"])
+            lines.append(indent("{msg} ({count} {files_str})".format(files_str=files_str, **msg),
+                                level=2))
     lines.append("")
 
     return "\n".join(lines)
@@ -136,22 +146,30 @@ def get_summary_dict(dict_output):
     Summarize compliance-checker results in 'json_new' format from checks on
     several datasets, and return a dict of the form
     {
-        "num_files": "<number of files tested>",
-        "num_no_errors": "<number of files without any errors">,
+        "num_files": <total files checked>,
+        "num_no_errors": <number of files with no check failures>,
         "summary": {
             "high_priorities": {
-                "<check one>": [
+                <checker name>: [
                     {
-                        "name": "<failure name>",
-                        "msgs": ["<failure message>", ...],
-                        "count": <number of files that failed the check>,
-                        "files": [<filename>, ...]
+                        "name": <check name>,
+                        "count": <number of files that failed this check>,
+                        "files": [<file 1>, <file 2>, ...],
+                        "msgs": [
+                            {
+                                "msg": <msg 1>,
+                                "count": <n>,
+                                "files": <files with this failure message>
+                            },
+                            ...
+                        ]
                     },
                     ...
                 ],
                 ...
             },
-            ...
+            "medium_priorities": {...},
+            "low_priorities": {...}
         }
     }
     """
@@ -176,12 +194,10 @@ def get_summary_dict(dict_output):
                     files_with_errors.add(filename)
                     # Find existing error with this name, or create new
                     # entry
-                    summarized_info = None
-                    for s in summary[p_level][check_name]:
-                        if s["name"] == res["name"]:
-                            summarized_info = s
-                            break
-                    else:
+                    try:
+                        summarized_info = [s for s in summary[p_level][check_name]
+                                           if s["name"] == res["name"]][0]
+                    except IndexError:
                         summarized_info = {"name": res["name"], "count": 0,
                                            "files": [], "msgs": []}
                         summary[p_level][check_name].append(summarized_info)
@@ -189,9 +205,17 @@ def get_summary_dict(dict_output):
                     summarized_info["count"] += 1
                     # Insert and preserve sort order
                     bisect.insort(summarized_info["files"], filename)
+
                     for msg in res["msgs"]:
-                        if msg not in summarized_info["msgs"]:
-                            summarized_info["msgs"].append(msg)
+                        try:
+                            msg_dict = [m for m in summarized_info["msgs"]
+                                        if m["msg"] == msg][0]
+                        except IndexError:
+                            msg_dict = {"msg": msg, "count": 0, "files": []}
+                            summarized_info["msgs"].append(msg_dict)
+
+                        msg_dict["count"] += 1
+                        bisect.insort(msg_dict["files"], filename)
 
     return {
         "num_files": len(dict_output),

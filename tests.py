@@ -27,7 +27,9 @@ class TestSummarizer(object):
             assert "check_name" in summarized["summary"][level_name]
 
         assert summarized["summary"]["high_priorities"]["check_name"] == [{
-            "name": "high p error", "msgs": ["h"], "files": ["file.nc"],
+            "name": "high p error",
+            "msgs": [{"msg": "h", "count": 1, "files": ["file.nc"]}],
+            "files": ["file.nc"],
             "count": 1
         }]
 
@@ -35,16 +37,20 @@ class TestSummarizer(object):
         summarized = get_summary_dict({
             "file1.nc": {
                 "check_name": {
-                    "high_priorities": [{"name": "high p error", "msgs": ["h"],
-                                         "value": [4, 5]}],
+                    "high_priorities": [
+                        {"name": "high p error", "msgs": ["h1", "h2"],
+                         "value": [4, 5]}
+                    ],
                     "medium_priorities": [],
                     "low_priorities": []
                 }
             },
             "file2.nc": {
                 "check_name": {
-                    "high_priorities": [{"name": "high p error", "msgs": ["h"],
-                                         "value": [4, 5]}],
+                    "high_priorities": [
+                        {"name": "high p error", "msgs": ["h1", "h3"],
+                         "value": [4, 5]},
+                    ],
                     "medium_priorities": [],
                     "low_priorities": []
                 }
@@ -53,12 +59,21 @@ class TestSummarizer(object):
 
         assert len(summarized["summary"]["high_priorities"]["check_name"]) == 1
         high_p = summarized["summary"]["high_priorities"]["check_name"][0]
-        assert high_p == {
-            "name": "high p error",
-            "msgs": ["h"],
-            "files": ["file1.nc", "file2.nc"],
-            "count": 2
-        }
+
+        assert high_p["name"] == "high p error"
+
+        expected_msgs = [
+            {"msg": "h1", "count": 2, "files": ["file1.nc", "file2.nc"]},
+            {"msg": "h2", "count": 1, "files": ["file1.nc"]},
+            {"msg": "h3", "count": 1, "files": ["file2.nc"]}
+        ]
+        for m in expected_msgs:
+            assert m in high_p["msgs"]
+        for m in high_p["msgs"]:
+            assert m in expected_msgs
+
+        assert high_p["files"] == ["file1.nc", "file2.nc"]
+        assert high_p["count"] == 2
 
     def test_no_errors(self):
         summarized = get_summary_dict({
