@@ -1,7 +1,7 @@
 import pytest
 
-from cc_summarizer import (get_summary_dict, indent, pluralise, underline,
-                           truncate_list, remove_empty_values)
+from cc_summarizer import (get_summary_dict, indent, pluralise, underline, truncate_list,
+                           remove_empty_values)
 
 
 class TestSummarizer(object):
@@ -9,8 +9,7 @@ class TestSummarizer(object):
         summarized = get_summary_dict({
             "file.nc": {
                 "check_name": {
-                    "high_priorities": [{"name": "high p error", "msgs": ["h"],
-                                         "value": [4, 5]}],
+                    "high_priorities": [{"name": "high p error", "msgs": ["h"], "value": [4, 5]}],
                     "medium_priorities": [],
                     "low_priorities": []
                 }
@@ -38,8 +37,7 @@ class TestSummarizer(object):
             "file1.nc": {
                 "check_name": {
                     "high_priorities": [
-                        {"name": "high p error", "msgs": ["h1", "h2"],
-                         "value": [4, 5]}
+                        {"name": "high p error", "msgs": ["h1", "h2"], "value": [4, 5]}
                     ],
                     "medium_priorities": [],
                     "low_priorities": []
@@ -48,8 +46,7 @@ class TestSummarizer(object):
             "file2.nc": {
                 "check_name": {
                     "high_priorities": [
-                        {"name": "high p error", "msgs": ["h1", "h3"],
-                         "value": [4, 5]},
+                        {"name": "high p error", "msgs": ["h1", "h3"], "value": [4, 5]},
                     ],
                     "medium_priorities": [],
                     "low_priorities": []
@@ -102,6 +99,7 @@ class TestSummarizer(object):
         assert summarized["num_no_errors"] == 1
         # Checks with full score should not be included
         assert len(summarized["summary"]["high_priorities"]["mycheck"]) == 1
+
 
 class TestMiscFunctions(object):
     def test_indent(self):

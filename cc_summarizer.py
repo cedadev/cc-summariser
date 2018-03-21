@@ -8,8 +8,7 @@ import argparse
 import bisect
 
 __version__ = "0.0.1"
-DESCRIPTION = ("Summarize the results compliance-checker run on multiple "
-               "datasets")
+DESCRIPTION = "Summarize the results compliance-checker run on multiple datasets"
 
 # Ensure output is encoded as Unicode when output is redirected or piped
 if sys.stdout.encoding is None:
@@ -55,8 +54,7 @@ def remove_empty_values(d):
 
 def brief_text(res_dict):
     """
-    Return a string to be included in the brief summary section of the text
-    report
+    Return a string to be included in the brief summary section of the text report
     """
     files_str = pluralise("file", res_dict["count"])
     return "- {name}: {count} {}".format(files_str, **res_dict)
@@ -86,8 +84,7 @@ def detailed_text(res_dict, limit):
         indent("Filenames:", level=1)
     ]
 
-    filenames = (truncate_list(res_dict["files"], limit) if limit
-                 else res_dict["files"])
+    filenames = truncate_list(res_dict["files"], limit) if limit else res_dict["files"]
 
     for name in filenames:
         lines.append(indent(name, level=2))
@@ -99,7 +96,6 @@ def detailed_text(res_dict, limit):
             lines.append(indent("{msg} ({count} {files_str})".format(files_str=files_str, **msg),
                                 level=2))
     lines.append("")
-
     return "\n".join(lines)
 
 
@@ -112,8 +108,7 @@ def get_summary_text(summary_dict, args):
     """
     lines = []
     lines.append("File scanned: {num_files}".format(**summary_dict))
-    lines.append("Number of files with no errors: {num_no_errors}"
-                 .format(**summary_dict))
+    lines.append("Number of files with no errors: {num_no_errors}".format(**summary_dict))
     lines.append("")
 
     summary = remove_empty_values(summary_dict["summary"])
@@ -198,8 +193,8 @@ def get_summary_dict(dict_output):
                         summarized_info = [s for s in summary[p_level][check_name]
                                            if s["name"] == res["name"]][0]
                     except IndexError:
-                        summarized_info = {"name": res["name"], "count": 0,
-                                           "files": [], "msgs": []}
+                        summarized_info = {"name": res["name"], "count": 0, "files": [],
+                                           "msgs": []}
                         summary[p_level][check_name].append(summarized_info)
 
                     summarized_info["count"] += 1
@@ -208,8 +203,7 @@ def get_summary_dict(dict_output):
 
                     for msg in res["msgs"]:
                         try:
-                            msg_dict = [m for m in summarized_info["msgs"]
-                                        if m["msg"] == msg][0]
+                            msg_dict = [m for m in summarized_info["msgs"] if m["msg"] == msg][0]
                         except IndexError:
                             msg_dict = {"msg": msg, "count": 0, "files": []}
                             summarized_info["msgs"].append(msg_dict)
@@ -227,16 +221,14 @@ def get_summary_dict(dict_output):
 def main():
     parser = argparse.ArgumentParser(description=DESCRIPTION)
     parser.add_argument("results_file",
-                        help="File containing compliance-checker results in "
-                             "'json_new' format")
+                        help="File containing compliance-checker results in 'json_new' format")
 
     parser.add_argument("-l", "--file-limit", type=int, default=None,
-                        help="The maximum number of offending files to list "
-                             "in the 'Failure details' section in the text "
-                             "format output")
+                        help="The maximum number of offending files to list in the 'Failure "
+                             "details' section in the text format output")
 
-    parser.add_argument("-f", "--format", choices=["text", "json"],
-                        default="text", help="Format to print summary in")
+    parser.add_argument("-f", "--format", choices=["text", "json"], default="text",
+                        help="Format to print summary in")
 
     args = parser.parse_args()
 
