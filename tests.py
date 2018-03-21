@@ -105,7 +105,7 @@ class TestSummarizer(object):
 
 class TestMiscFunctions(object):
     def test_indent(self):
-        assert indent("hello\nthere", level=2) == "    hello\n    there"
+        assert indent("hello\nthere", level=2) == "        hello\n        there"
 
     def test_underline(self):
         assert underline("some text", "@") == "some text\n@@@@@@@@@"

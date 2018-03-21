@@ -24,7 +24,7 @@ def indent(text, level):
     """
     Indent each line in a string by prepending whitespace
     """
-    return "\n".join([" " * (2 * level) + line for line in text.split("\n")])
+    return "\n".join([" " * (4 * level) + line for line in text.split("\n")])
 
 
 def underline(text, underline_char):
