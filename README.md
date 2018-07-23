@@ -1,5 +1,7 @@
 # cc-summariser #
 
+**NOTE**: This repo has now been moved to https://github.com/cedadev/cc-summariser
+
 `cc-summariser` creates a summary of [compliance-checker](https://github.com/ioos/compliance-checker)
 results from running checks on multiple datasets.
 
