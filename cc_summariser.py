@@ -8,7 +8,7 @@ import argparse
 import bisect
 
 __version__ = "0.0.1"
-DESCRIPTION = "Summarize the results compliance-checker run on multiple datasets"
+DESCRIPTION = "Summarise the results compliance-checker run on multiple datasets"
 
 # Ensure output is encoded as Unicode when output is redirected or piped
 if sys.stdout.encoding is None:
@@ -138,7 +138,7 @@ def get_summary_text(summary_dict, args):
 
 def get_summary_dict(dict_output):
     """
-    Summarize compliance-checker results in 'json_new' format from checks on
+    Summarise compliance-checker results in 'json_new' format from checks on
     several datasets, and return a dict of the form
     {
         "num_files": <total files checked>,
@@ -190,23 +190,23 @@ def get_summary_dict(dict_output):
                     # Find existing error with this name, or create new
                     # entry
                     try:
-                        summarized_info = [s for s in summary[p_level][check_name]
+                        summarised_info = [s for s in summary[p_level][check_name]
                                            if s["name"] == res["name"]][0]
                     except IndexError:
-                        summarized_info = {"name": res["name"], "count": 0, "files": [],
+                        summarised_info = {"name": res["name"], "count": 0, "files": [],
                                            "msgs": []}
-                        summary[p_level][check_name].append(summarized_info)
+                        summary[p_level][check_name].append(summarised_info)
 
-                    summarized_info["count"] += 1
+                    summarised_info["count"] += 1
                     # Insert and preserve sort order
-                    bisect.insort(summarized_info["files"], filename)
+                    bisect.insort(summarised_info["files"], filename)
 
                     for msg in res["msgs"]:
                         try:
-                            msg_dict = [m for m in summarized_info["msgs"] if m["msg"] == msg][0]
+                            msg_dict = [m for m in summarised_info["msgs"] if m["msg"] == msg][0]
                         except IndexError:
                             msg_dict = {"msg": msg, "count": 0, "files": []}
-                            summarized_info["msgs"].append(msg_dict)
+                            summarised_info["msgs"].append(msg_dict)
 
                         msg_dict["count"] += 1
                         bisect.insort(msg_dict["files"], filename)
