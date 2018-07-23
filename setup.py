@@ -1,5 +1,5 @@
 from setuptools import setup, find_packages
-from cc_summarizer import __version__, DESCRIPTION
+from cc_summariser import __version__, DESCRIPTION
 
 def readme():
     with open("README.md") as f:
@@ -7,12 +7,12 @@ def readme():
 
 
 setup(
-    name                 = "cc-summarizer",
+    name                 = "cc-summariser",
     version              = __version__,
     description          = DESCRIPTION,
     long_description     = readme(),
     packages             = find_packages(),
     install_requires     = [],
     tests_require        = ["pytest"],
-    entry_points         = {"console_scripts": ["cc-summarizer = cc_summarizer:main"]}
+    entry_points         = {"console_scripts": ["cc-summariser = cc_summariser:main"]}
 )

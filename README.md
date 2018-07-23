@@ -1,13 +1,13 @@
-# cc-summarizer #
+# cc-summariser #
 
-`cc-summarizer` creates a summary of [compliance-checker](https://github.com/ioos/compliance-checker)
+`cc-summariser` creates a summary of [compliance-checker](https://github.com/ioos/compliance-checker)
 results from running checks on multiple datasets.
 
 ## Installation ##
 
 ```
-git clone https://github.com/joesingo/cc-summarizer
-pip install ./cc-summarizer
+git clone https://github.com/joesingo/cc-summariser
+pip install ./cc-summariser
 
 # Multiple dataset output is not yet on master branch...
 pip install git+https://github.com/ioos/compliance-checker@refactor-scoring
@@ -18,14 +18,14 @@ pip install git+https://github.com/ioos/compliance-checker@refactor-scoring
 The most basic usage is as follows:
 ```
 compliance-checker -f json_new -o results.json --test <your test(s)> <dataset>...
-cc-summarizer results.json
+cc-summariser results.json
 ```
 
-For more options see the output of `cc-summarizer --help`:
+For more options see the output of `cc-summariser --help`:
 ```
-usage: cc-summarizer [-h] [-l FILE_LIMIT] [-f {text,json}] results_file
+usage: cc-summariser [-h] [-l FILE_LIMIT] [-f {text,json}] results_file
 
-Summarize the results compliance-checker run on multiple datasets
+Summarise the results compliance-checker run on multiple datasets
 
 positional arguments:
   results_file          File containing compliance-checker results in
