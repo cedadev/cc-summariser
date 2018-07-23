@@ -7,8 +7,6 @@ from collections import OrderedDict
 import argparse
 import bisect
 
-__version__ = "0.0.1"
-DESCRIPTION = "Summarise the results compliance-checker run on multiple datasets"
 
 # Ensure output is encoded as Unicode when output is redirected or piped
 if sys.stdout.encoding is None:

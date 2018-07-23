@@ -1,5 +1,9 @@
 from setuptools import setup, find_packages
-from cc_summariser import __version__, DESCRIPTION
+
+
+__version__ = "0.0.1"
+DESCRIPTION = "Summarise the results compliance-checker run on multiple datasets"
+
 
 def readme():
     with open("README.md") as f:
